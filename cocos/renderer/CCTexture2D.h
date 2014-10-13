@@ -410,7 +410,7 @@ protected:
     /** height in pixels */
     int _pixelsHigh;
 
-    /** texture name */
+    /** texture name 纹理对象名*/
     GLuint _name;
 
     /** texture max S */
