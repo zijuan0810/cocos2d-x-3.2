@@ -697,18 +697,33 @@ void Director::setAlphaBlending(bool on)
 
 void Director::setDepthTest(bool on)
 {
-    if (on)
-    {
+    if (on) {
+		// Specifies the depth value used when the depth buffer is cleared. 
+		// The initial value is 1.
         glClearDepth(1.0f);
+
+		/*
+		 GL_NEVER：永不绘制
+		 GL_LESS：如果目标像素z值<当前像素z值，则绘制目标像素
+		 GL_EQUAL：如果目标像素z值＝当前像素z值，则绘制目标像素
+		 GL_LEQUAL：如果目标像素z值<＝当前像素z值，则绘制目标像素
+		 GL_GREATER ：如果目标像素z值>当前像素z值，则绘制目标像素
+		 GL_NOTEQUAL：如果目标像素z值<>当前像素z值，则绘制目标像素
+		 GL_GEQUAL：如果目标像素z值>=当前像素z值，则绘制目标像素\
+		 GL_ALWAYS：总是绘制
+		 */
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LEQUAL);
-//        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    }
-    else
-    {
-        glDisable(GL_DEPTH_TEST);
-    }
-    CHECK_GL_ERROR_DEBUG();
+		/*
+		 表示color和texture coordinate修正值的质量，如果GL不支持perspective-corrected，则指示GL GL_DONT_CARE或GL_FASTEST。
+		 真正精细的透视修正。这一行告诉OpenGL我们希望进行最好的透视修正。这会十分轻微的影响性能。但使得透视图看起来好一点
+		 */
+		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	}
+	else {
+		glDisable(GL_DEPTH_TEST);
+	}
+	CHECK_GL_ERROR_DEBUG();
 }
 
 static void GLToClipTransform(Mat4 *transformOut)
