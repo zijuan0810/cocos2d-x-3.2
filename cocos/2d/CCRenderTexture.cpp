@@ -197,8 +197,7 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
 
     bool ret = false;
     void *data = nullptr;
-    do 
-    {
+    do {
         _fullRect = _rtTextureRect = Rect(0,0,w,h);
         //Size size = Director::getInstance()->getWinSizeInPixels();
         //_fullviewPort = Rect(0,0,size.width,size.height);
@@ -206,6 +205,7 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
         h = (int)(h * CC_CONTENT_SCALE_FACTOR());
         _fullviewPort = Rect(0,0,w,h);
         
+		// 取出旧的FBO，便于后面恢复原始状态
         glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
 
         // textures must be power of two squared
@@ -242,15 +242,12 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
         GLint oldRBO;
         glGetIntegerv(GL_RENDERBUFFER_BINDING, &oldRBO);
         
-        if (Configuration::getInstance()->checkForGLExtension("GL_QCOM"))
-        {
+        if (Configuration::getInstance()->checkForGLExtension("GL_QCOM")) {
             _textureCopy = new Texture2D();
-            if (_textureCopy)
-            {
+            if (_textureCopy) {
                 _textureCopy->initWithData(data, dataLen, (Texture2D::PixelFormat)_pixelFormat, powW, powH, Size((float)w, (float)h));
             }
-            else
-            {
+            else {
                 break;
             }
         }
@@ -262,17 +259,17 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
         // associate texture with FBO
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture->getName(), 0);
 
-        if (depthStencilFormat != 0)
-        {
-            //create and attach depth buffer
-            glGenRenderbuffers(1, &_depthRenderBufffer);
-            glBindRenderbuffer(GL_RENDERBUFFER, _depthRenderBufffer);
-            glRenderbufferStorage(GL_RENDERBUFFER, depthStencilFormat, (GLsizei)powW, (GLsizei)powH);
+        if (depthStencilFormat != 0) {
+            // create and attach depth buffer
+            glGenRenderbuffers(1, &_depthRenderBufffer); // 创建RBO
+            glBindRenderbuffer(GL_RENDERBUFFER, _depthRenderBufffer); // RBO只能绑定到GL_RENDERBUFFER目标上
+            glRenderbufferStorage(GL_RENDERBUFFER, depthStencilFormat, (GLsizei)powW, (GLsizei)powH); // 为RBO分配存储空间
+			// 将FBO与RBO链接起来
+			// 一个帧缓冲区（FBO）可以有多个绑定点：一个深度绑定点，一个模版绑定点和多个颜色绑定点
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthRenderBufffer);
 
             // if depth format is the one with stencil part, bind same render buffer as stencil attachment
-            if (depthStencilFormat == GL_DEPTH24_STENCIL8)
-            {
+            if (depthStencilFormat == GL_DEPTH24_STENCIL8) {
                 glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, _depthRenderBufffer);
             }
         }
