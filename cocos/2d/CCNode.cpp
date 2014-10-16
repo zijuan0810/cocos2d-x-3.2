@@ -1242,12 +1242,10 @@ void Node::visit(Renderer* renderer, const Mat4 &parentTransform, uint32_t paren
 
     int i = 0;
 
-    if(!_children.empty())
-    {
+    if(!_children.empty()) {
         sortAllChildren();
         // draw children zOrder < 0
-        for( ; i < _children.size(); i++ )
-        {
+        for( ; i < _children.size(); i++ ) {
             auto node = _children.at(i);
 
             if ( node && node->_localZOrder < 0 )
@@ -1261,8 +1259,7 @@ void Node::visit(Renderer* renderer, const Mat4 &parentTransform, uint32_t paren
         for(auto it=_children.cbegin()+i; it != _children.cend(); ++it)
             (*it)->visit(renderer, _modelViewTransform, flags);
     }
-    else
-    {
+    else {
         this->draw(renderer, _modelViewTransform, flags);
     }
 

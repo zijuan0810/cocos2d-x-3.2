@@ -352,8 +352,7 @@ void Renderer::render()
     //TODO setup camera or MVP
     _isRendering = true;
     
-    if (_glViewAssigned)
-    {
+    if (_glViewAssigned) {
         // cleanup
         _drawnBatches = _drawnVertices = 0;
 

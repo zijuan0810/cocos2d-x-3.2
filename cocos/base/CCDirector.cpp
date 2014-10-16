@@ -285,24 +285,21 @@ void Director::drawScene()
     pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
 
     // draw the scene
-    if (_runningScene)
-    {
+    if (_runningScene) { // 这里并没有真正的绘制，而是将OpenGL命名发送到DrawCommand中
         _runningScene->visit(_renderer, Mat4::IDENTITY, false);
         _eventDispatcher->dispatchEvent(_eventAfterVisit);
     }
 
     // draw the notifications node
-    if (_notificationNode)
-    {
+    if (_notificationNode) {
         _notificationNode->visit(_renderer, Mat4::IDENTITY, false);
     }
 
-    if (_displayStats)
-    {
+    if (_displayStats) {
         showStats();
     }
 
-    _renderer->render();
+    _renderer->render(); // 这里才开始真正的OpenGL绘制
     _eventDispatcher->dispatchEvent(_eventAfterDraw);
 
     popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
@@ -718,7 +715,7 @@ void Director::setDepthTest(bool on)
 		 表示color和texture coordinate修正值的质量，如果GL不支持perspective-corrected，则指示GL GL_DONT_CARE或GL_FASTEST。
 		 真正精细的透视修正。这一行告诉OpenGL我们希望进行最好的透视修正。这会十分轻微的影响性能。但使得透视图看起来好一点
 		 */
-		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+		//glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	}
 	else {
 		glDisable(GL_DEPTH_TEST);
@@ -952,8 +949,7 @@ void Director::purgeDirector()
     getScheduler()->unscheduleAll();
     
     // Disable event dispatching
-    if (_eventDispatcher)
-    {
+    if (_eventDispatcher) {
         _eventDispatcher->setEnabled(false);
     }
 
