@@ -24,6 +24,9 @@ protected:
 	void onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event);
 	void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event);
 
+	void addBlendSpriteWithShader();
+	void addBlendSpriteWithoutShader();
+
 private:
 	int		_calendarIdx;
 	Sprite*	_calendar;

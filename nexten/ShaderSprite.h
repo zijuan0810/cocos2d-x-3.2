@@ -28,7 +28,7 @@ protected:
 	//virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags);
 
 private:
-	void onDraw(const cocos2d::kmMat4 &transform, bool transformUpdated);
+	void onDraw(const cocos2d::Mat4 &transform, bool transformUpdated);
 
 protected:
 	std::string _fshSourceFile;

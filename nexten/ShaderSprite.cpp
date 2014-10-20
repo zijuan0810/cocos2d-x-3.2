@@ -86,7 +86,7 @@ void ShaderSprite::draw(Renderer *renderer, const Mat4 &transform, uint32_t flag
 	renderer->addCommand(&_customCommand);
 }
 
-void ShaderSprite::onDraw(const kmMat4 &transform, bool transformUpdated)
+void ShaderSprite::onDraw(const Mat4 &transform, bool transformUpdated)
 {
 	auto shader = this->getShaderProgram();
 	shader->use();

@@ -112,25 +112,83 @@ Sprite* BlendTest::createMaskedSprite(Sprite* textureSprite, Sprite* maskSprite)
 
 bool BlendTest::init()
 {
-	//////////////////////////////
-	// 1. super init first
 	if (!Layer::init()) {
 		return false;
 	}
 
+	this->addBlendSpriteWithoutShader();
+
+	return true;
+}
+
+void BlendTest::addBlendSpriteWithoutShader()
+{
 	const Size& winSize = Director::getInstance()->getWinSize();
 
-	/*
+	// 创建遮罩图片
+	Sprite *maskSprite = Sprite::create("CalendarMask.png");
+	maskSprite->retain();
+	maskSprite->setPosition(Point(maskSprite->getContentSize() / 2.0f));
+
+	// 创建被遮罩图片
+	Sprite *flowerSprite = Sprite::create("Calendar1.png");
+	flowerSprite->retain();
+	flowerSprite->setPosition(Point(flowerSprite->getContentSize() / 2.0f));
+
+	// 创建干净的画板，在后台进行渲染
+	const Size& textureSize = flowerSprite->getContentSize();
+	RenderTexture *renderTexture = RenderTexture::create(textureSize.width, textureSize.height);
+	renderTexture->retain();
+	renderTexture->setPosition(Point(textureSize / 2.0f));
+
+	// 先设置好 遮罩精灵 和 被遮罩精灵 在被渲染的时候采用什么样的颜色混合法则 
+	maskSprite->setBlendFunc(BlendFunc{ GL_ONE, GL_ZERO });
+	flowerSprite->setBlendFunc(BlendFunc{ GL_DST_ALPHA, GL_ZERO });
+
+	// 开始把各种精灵渲染到画板上
+	renderTexture->setKeepMatrix(true);
+	renderTexture->begin();
+	// 先渲染遮罩精灵。但是因为有个画板先被渲染。所以pMask是第二个被渲染的，即后被渲染。
+	// 所以在这一刻pMask是源颜色。调用pMask->visit()的时候吧精灵pMask上的每个像素的RGBA分量和1.0相乘。
+	// 所以遮罩图片被元模原样的渲染出来.
+	maskSprite->visit();
+	// 再渲染被遮罩的精灵.在这一刻,之前先有pMask被渲染。所以pFlower后被渲染。pFlower就是源颜色。
+	// 之前的pMask就是目标颜色。
+	// 调用pFlower->visit()的时候,精灵pFlower上的对应像素的RGBA分量和pMask上的对应像素的A分量相乘.
+	// 因为前面设置了GL_DST_ALPHA。
+	flowerSprite->visit();
+	// 停止渲染到画板  
+	renderTexture->end();
+
+	Sprite* newSprite = Sprite::createWithTexture(renderTexture->getSprite()->getTexture());
+	newSprite->setPosition(Point(winSize / 2.0f));
+	newSprite->setFlippedY(true);
+	this->addChild(newSprite);
+
+	// 必须延迟删除，因为visit()有调用渲染命令，可能会将上面创建的对象删除掉
+	Sequence	*seq = Sequence::create(DelayTime::create(0.0f), CallFunc::create([=] {
+		maskSprite->release();
+		flowerSprite->release();
+		renderTexture->release();
+	}), nullptr);
+
+	newSprite->runAction(seq);
+}
+
+void BlendTest::addBlendSpriteWithShader()
+{
+	const Size& winSize = Director::getInstance()->getWinSize();
+
 	Sprite* spCalendar1 = Sprite::create("Calendar1.png");
-	//spCalendar1->setAnchorPoint(Point(0, 0));
-	//spCalendar1->setPosition(Point(0, 0));
+	spCalendar1->setAnchorPoint(Point(0, 0));
+	spCalendar1->setPosition(Point(0, 0));
 	spCalendar1->retain();
 
 	ShaderSprite* spCalendarMask = ShaderSprite::create(nullptr, "mask.fsh");
 	spCalendarMask->setTexture("CalendarMask.png");
 	spCalendarMask->setBlendFunc(BlendFunc{ GL_ZERO, GL_SRC_ALPHA });
-	//spCalendarMask->setAnchorPoint(Point(0, 0));
-	//spCalendarMask->setPosition(Point(0, 0));
+	spCalendarMask->setAnchorPoint(Point(0, 0));
+	spCalendarMask->setPosition(Point(0, 0));
 	spCalendarMask->retain();
 
 	const Size& textureSize = spCalendar1->getContentSize();
@@ -150,95 +208,13 @@ bool BlendTest::init()
 	newSprite->setPosition(Point(winSize / 2.0f));
 
 	Sequence* seq = Sequence::create(DelayTime::create(0.0f), CallFunc::create([=]{
-		spCalendarMask->release();
-		spCalendar1->release();
-		tmpRender->release();
+	spCalendarMask->release();
+	spCalendar1->release();
+	tmpRender->release();
 	}), NULL);
 
 	newSprite->runAction(seq);
 
 	newSprite->setFlippedY(true);
 	this->addChild(newSprite);
-	*/
-
-	/*
-	Sprite* spCalendar1 = Sprite::create("Calendar1.png");
-	//spCalendar1->setAnchorPoint(Point(0, 0));
-	//spCalendar1->setPosition(Point(0, 0));
-	//spCalendar1->retain();
-
-	ShaderSprite* spCalendarMask = ShaderSprite::create(nullptr, "mask.fsh");
-	spCalendarMask->setTexture("CalendarMask.png");
-	spCalendarMask->setBlendFunc(BlendFunc{ GL_ZERO, GL_SRC_ALPHA });
-	//spCalendarMask->setAnchorPoint(Point(0, 0));
-	//spCalendarMask->setPosition(Point(0, 0));
-	//spCalendarMask->retain();
-
-	const Size& textureSize = spCalendar1->getContentSize();
-	RenderTexture* renderTexture = RenderTexture::create(textureSize.width, textureSize.height);
-	renderTexture->setKeepMatrix(true);
-
-	renderTexture->begin();
-	spCalendar1->visit();
-	spCalendarMask->visit();
-	renderTexture->end();
-
-	Sprite* finallySprite = Sprite::createWithTexture(renderTexture->getSprite()->getTexture());
-	finallySprite->setFlippedY(true);
-	this->addChild(finallySprite);
-	*/
-	
-
-	CCSize size = CCDirector::sharedDirector()->getWinSize();
-	//创建干净的画板
-	CCRenderTexture *renderTexture = CCRenderTexture::create(size.width, size.height);
-	CCAssert(renderTexture, "RenderTexture is invalid");
-	renderTexture->setKeepMatrix(true);
-	renderTexture->retain();
-	//addChild(renderTexture);
-	renderTexture->setPosition(size.width / 2, size.height / 2);
-
-	//创建遮罩图片
-	CCSprite *pMask = CCSprite::create("CalendarMask.png");
-	CCAssert(pMask, "mask sprite is invalid");
-	pMask->retain();
-	pMask->setPosition(CCPointMake(pMask->getContentSize().width / 2, pMask->getContentSize().height / 2));
-	//创建被遮罩图片
-	CCSprite *pFlower = CCSprite::create("Calendar1.png");
-	CCAssert(pFlower, "Flower sprite is invalid");
-	pFlower->retain();
-	pFlower->setPosition(Point(pFlower->getContentSize().width / 2, pFlower->getContentSize().height / 2));
-
-
-	//先设置好 遮罩精灵 和 被遮罩精灵 在被渲染的时候采用什么样的颜色混合法则 
-	ccBlendFunc maskBlend = { GL_ONE, GL_ZERO };
-	ccBlendFunc flowerBlend = { GL_DST_ALPHA, GL_ZERO };
-	pMask->setBlendFunc(maskBlend);
-	pFlower->setBlendFunc(flowerBlend);
-	//开始把各种精灵渲染到画板上
-	renderTexture->begin();
-	//先渲染遮罩精灵。但是因为有个画板先被渲染。所以pMask是第二个被渲染的，即后被渲染。
-	//所以在这一刻pMask是源颜色。调用pMask->visit()的时候吧精灵pMask上的每个像素的RGBA分量和1.0相乘。
-	//所以遮罩图片被元模原样的渲染出来.
-	pMask->visit();
-	//再渲染被遮罩的精灵.在这一刻,之前先有pMask被渲染。所以pFlower后被渲染。pFlower就是源颜色。之前的pMask就是目标颜色。
-	//调用pFlower->visit()的时候,精灵pFlower上的对应像素的RGBA分量和pMask上的对应像素的A分量相乘.因为前面设置了GL_DST_ALPHA。
-	pFlower->visit();
-	//停止渲染到画板  
-	renderTexture->end();
-
-	Sprite* newSprite = Sprite::createWithTexture(renderTexture->getSprite()->getTexture());
-	newSprite->setPosition(Point(winSize / 2.0f));
-	newSprite->setFlippedY(true);
-	this->addChild(newSprite);
-
-	Sequence* seq = Sequence::create(DelayTime::create(0.0f), CallFunc::create([=]{
-		pFlower->release();
-		pMask->release();
-		renderTexture->release();
-	}), NULL);
-
-	newSprite->runAction(seq);
-
-	return true;
 }
