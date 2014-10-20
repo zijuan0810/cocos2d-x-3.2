@@ -37,9 +37,6 @@
     <ClInclude Include="main.h">
       <Filter>win32</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\AppMacros.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\BlendTest\BlendTest.h">
       <Filter>Classes\BlendTest</Filter>
     </ClInclude>

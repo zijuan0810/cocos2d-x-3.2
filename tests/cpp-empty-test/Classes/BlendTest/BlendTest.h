@@ -13,7 +13,20 @@ public:
 
 	virtual bool init();
 
+	void refreshCalendar();
+	int getCalendarIdx() const;
+	Sprite* createMaskedSprite(Sprite* textureSprite, Sprite* maskSprite);
+
 	CREATE_FUNC(BlendTest);
+
+protected:
+	bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event);
+	void onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event);
+	void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event);
+
+private:
+	int		_calendarIdx;
+	Sprite*	_calendar;
 };
 
 #endif // _BLENDTEST_H_

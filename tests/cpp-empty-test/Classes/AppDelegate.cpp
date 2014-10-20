@@ -21,25 +21,17 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLView::create("Cpp Empty Test");
-        director->setOpenGLView(glview);
-    }
+        glview = GLView::createWithRect("Cpp Empty Test", Rect(0, 0, 480, 320));
+		director->setOpenGLView(glview);
+	}
+	director->setOpenGLView(glview);
+	glview->setDesignResolutionSize(480.0f, 320.0f, ResolutionPolicy::NO_BORDER);
 
-    director->setOpenGLView(glview);
+	// turn on display FPS
+	director->setDisplayStats(true);
 
-    // Set the design resolution
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
-    // a bug in DirectX 11 level9-x on the device prevents ResolutionPolicy::NO_BORDER from working correctly
-    glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::SHOW_ALL);
-#else
-    glview->setDesignResolutionSize(960.0f, 640.0f, ResolutionPolicy::NO_BORDER);
-#endif
-
-    // turn on display FPS
-    director->setDisplayStats(true);
-
-    // set FPS. the default value is 1.0/60 if you don't call this
-    director->setAnimationInterval(1.0 / 60);
+	// set FPS. the default value is 1.0/60 if you don't call this
+	director->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
     auto scene = HelloWorld::scene();

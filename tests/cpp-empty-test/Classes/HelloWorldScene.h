@@ -12,8 +12,6 @@ public:
     virtual bool init();  
 
     CREATE_FUNC(HelloWorld);
-protected:
-    void menuCloseCallback(Ref* sender);
 };
 
 #endif // __HELLOWORLD_SCENE_H__
