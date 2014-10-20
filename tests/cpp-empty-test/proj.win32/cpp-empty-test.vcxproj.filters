@@ -9,6 +9,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Classes\BlendTest">
+      <UniqueIdentifier>{93b3fc24-9651-468b-90ad-f9572ded675b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp">
@@ -19,6 +22,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\BlendTest\BlendTest.cpp">
+      <Filter>Classes\BlendTest</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -33,6 +39,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\AppMacros.h">
       <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\BlendTest\BlendTest.h">
+      <Filter>Classes\BlendTest</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
