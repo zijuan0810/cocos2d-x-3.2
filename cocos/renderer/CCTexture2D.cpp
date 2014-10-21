@@ -635,28 +635,23 @@ bool Texture2D::initWithMipmaps(MipmapInfo* mipmaps, int mipmapsNum, PixelFormat
     int width = pixelsWide;
     int height = pixelsHigh;
     
-    for (int i = 0; i < mipmapsNum; ++i)
-    {
+    for (int i = 0; i < mipmapsNum; ++i) {
         unsigned char *data = mipmaps[i].address;
         GLsizei datalen = mipmaps[i].len;
 
-        if (info.compressed)
-        {
+        if (info.compressed) {
             glCompressedTexImage2D(GL_TEXTURE_2D, i, info.internalFormat, (GLsizei)width, (GLsizei)height, 0, datalen, data);
         }
-        else
-        {
+        else {
             glTexImage2D(GL_TEXTURE_2D, i, info.internalFormat, (GLsizei)width, (GLsizei)height, 0, info.format, info.type, data);
         }
 
-        if (i > 0 && (width != height || ccNextPOT(width) != width ))
-        {
+        if (i > 0 && (width != height || ccNextPOT(width) != width )) {
             CCLOG("cocos2d: Texture2D. WARNING. Mipmap level %u is not squared. Texture won't render correctly. width=%d != height=%d", i, width, height);
         }
 
         GLenum err = glGetError();
-        if (err != GL_NO_ERROR)
-        {
+        if (err != GL_NO_ERROR) {
             CCLOG("cocos2d: Texture2D: Error uploading compressed texture level: %u . glError: 0x%04X", i, err);
             return false;
         }
