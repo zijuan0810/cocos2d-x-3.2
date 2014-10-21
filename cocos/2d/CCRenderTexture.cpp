@@ -147,41 +147,38 @@ void RenderTexture::listenToForeground(EventCustom *event)
 #endif
 }
 
-RenderTexture * RenderTexture::create(int w, int h, Texture2D::PixelFormat eFormat)
+RenderTexture* RenderTexture::create(int w, int h, Texture2D::PixelFormat eFormat)
 {
     RenderTexture *ret = new RenderTexture();
-
-    if(ret && ret->initWithWidthAndHeight(w, h, eFormat))
-    {
+    if(ret && ret->initWithWidthAndHeight(w, h, eFormat)) {
         ret->autorelease();
         return ret;
     }
+
     CC_SAFE_DELETE(ret);
     return nullptr;
 }
 
-RenderTexture * RenderTexture::create(int w ,int h, Texture2D::PixelFormat eFormat, GLuint uDepthStencilFormat)
+RenderTexture* RenderTexture::create(int w ,int h, Texture2D::PixelFormat eFormat, GLuint uDepthStencilFormat)
 {
     RenderTexture *ret = new RenderTexture();
-
-    if(ret && ret->initWithWidthAndHeight(w, h, eFormat, uDepthStencilFormat))
-    {
+    if(ret && ret->initWithWidthAndHeight(w, h, eFormat, uDepthStencilFormat)) {
         ret->autorelease();
         return ret;
     }
+
     CC_SAFE_DELETE(ret);
     return nullptr;
 }
 
-RenderTexture * RenderTexture::create(int w, int h)
+RenderTexture* RenderTexture::create(int w, int h)
 {
-    RenderTexture *ret = new RenderTexture();
-
-    if(ret && ret->initWithWidthAndHeight(w, h, Texture2D::PixelFormat::RGBA8888, 0))
-    {
+    RenderTexture *ret = new RenderTexture(); 
+    if(ret && ret->initWithWidthAndHeight(w, h, Texture2D::PixelFormat::RGBA8888, 0)) {
         ret->autorelease();
         return ret;
     }
+
     CC_SAFE_DELETE(ret);
     return nullptr;
 }
@@ -198,12 +195,12 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
     bool ret = false;
     void *data = nullptr;
     do {
-        _fullRect = _rtTextureRect = Rect(0,0,w,h);
+		_fullRect = _rtTextureRect = Rect(0, 0, w, h);
         //Size size = Director::getInstance()->getWinSizeInPixels();
         //_fullviewPort = Rect(0,0,size.width,size.height);
         w = (int)(w * CC_CONTENT_SCALE_FACTOR());
         h = (int)(h * CC_CONTENT_SCALE_FACTOR());
-        _fullviewPort = Rect(0,0,w,h);
+		_fullviewPort = Rect(0, 0, w, h);
         
 		// 取出旧的FBO，便于后面恢复原始状态
         glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
@@ -212,13 +209,11 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
         int powW = 0;
         int powH = 0;
 
-        if (Configuration::getInstance()->supportsNPOT())
-        {
+        if (Configuration::getInstance()->supportsNPOT()) {
             powW = w;
             powH = h;
         }
-        else
-        {
+        else {
             powW = ccNextPOT(w);
             powH = ccNextPOT(h);
         }
@@ -231,12 +226,10 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
         _pixelFormat = format;
 
         _texture = new Texture2D();
-        if (_texture)
-        {
+        if (_texture) {
             _texture->initWithData(data, dataLen, (Texture2D::PixelFormat)_pixelFormat, powW, powH, Size((float)w, (float)h));
         }
-        else
-        {
+        else {
             break;
         }
         GLint oldRBO;

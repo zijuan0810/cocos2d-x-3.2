@@ -57,7 +57,8 @@ class GLProgram;
 /** @brief Texture2D class.
 * This class allows to easily create OpenGL 2D textures from images, text or raw data.
 * The created Texture2D object will always have power-of-two dimensions.
-* Depending on how you create the Texture2D object, the actual image area of the texture might be smaller than the texture dimensions i.e. "contentSize" != (pixelsWide, pixelsHigh) and (maxS, maxT) != (1.0, 1.0).
+* Depending on how you create the Texture2D object, the actual image area of the texture 
+* might be smaller than the texture dimensions i.e. "contentSize" != (pixelsWide, pixelsHigh) and (maxS, maxT) != (1.0, 1.0).
 * Be aware that the content of the generated textures will be upside-down!
 */
 class CC_DLL Texture2D : public Ref
@@ -69,8 +70,7 @@ public:
     /** @typedef Texture2D::PixelFormat
      Possible texture pixel formats
      */
-    enum class PixelFormat
-    {
+    enum class PixelFormat {
         //! auto detect the type
         AUTO,
         //! 32-bit texture: BGRA8888
@@ -149,7 +149,7 @@ public:
         GLuint    magFilter;
         GLuint    wrapS;
         GLuint    wrapT;
-    }TexParams;
+    } TexParams;
     
 public:
     /** sets the default pixel format for UIImagescontains alpha channel.

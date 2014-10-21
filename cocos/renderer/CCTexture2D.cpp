@@ -114,8 +114,8 @@ namespace {
 //CLASS IMPLEMENTATIONS:
 
 //The PixpelFormat corresponding information
-const Texture2D::PixelFormatInfoMap Texture2D::_pixelFormatInfoTables(TexturePixelFormatInfoTablesValue,
-                                                                     TexturePixelFormatInfoTablesValue + sizeof(TexturePixelFormatInfoTablesValue) / sizeof(TexturePixelFormatInfoTablesValue[0]));
+const Texture2D::PixelFormatInfoMap Texture2D::_pixelFormatInfoTables(TexturePixelFormatInfoTablesValue, 
+	TexturePixelFormatInfoTablesValue + sizeof(TexturePixelFormatInfoTablesValue) / sizeof(TexturePixelFormatInfoTablesValue[0]));
 
 // If the image has alpha, you can create RGBA8 (32-bit) or RGBA4 (16-bit) or RGB5A1 (16-bit)
 // Default is: RGBA8888 (32-bit textures)
@@ -536,11 +536,12 @@ bool Texture2D::hasPremultipliedAlpha() const
     return _hasPremultipliedAlpha;
 }
 
-bool Texture2D::initWithData(const void *data, ssize_t dataLen, Texture2D::PixelFormat pixelFormat, int pixelsWide, int pixelsHigh, const Size& contentSize)
+bool Texture2D::initWithData(const void *data, ssize_t dataLen, Texture2D::PixelFormat pixelFormat, 
+	int pixelsWide, int pixelsHigh, const Size& contentSize)
 {
-    CCASSERT(dataLen>0 && pixelsWide>0 && pixelsHigh>0, "Invalid size");
+	CCASSERT(dataLen > 0 && pixelsWide > 0 && pixelsHigh > 0, "Invalid size");
 
-    //if data has no mipmaps, we will consider it has only one mipmap
+    // if data has no mipmaps, we will consider it has only one mipmap
     MipmapInfo mipmap;
     mipmap.address = (unsigned char*)data;
     mipmap.len = static_cast<int>(dataLen);
@@ -549,64 +550,54 @@ bool Texture2D::initWithData(const void *data, ssize_t dataLen, Texture2D::Pixel
 
 bool Texture2D::initWithMipmaps(MipmapInfo* mipmaps, int mipmapsNum, PixelFormat pixelFormat, int pixelsWide, int pixelsHigh)
 {
-
-
-    //the pixelFormat must be a certain value 
+    // the pixelFormat must be a certain value 
     CCASSERT(pixelFormat != PixelFormat::NONE && pixelFormat != PixelFormat::AUTO, "the \"pixelFormat\" param must be a certain value!");
-    CCASSERT(pixelsWide>0 && pixelsHigh>0, "Invalid size");
+	CCASSERT(pixelsWide > 0 && pixelsHigh > 0, "Invalid size");
 
-    if (mipmapsNum <= 0)
-    {
+    if (mipmapsNum <= 0) {
         CCLOG("cocos2d: WARNING: mipmap number is less than 1");
         return false;
     }
     
 
-    if(_pixelFormatInfoTables.find(pixelFormat) == _pixelFormatInfoTables.end())
-    {
+    if(_pixelFormatInfoTables.find(pixelFormat) == _pixelFormatInfoTables.end()) {
         CCLOG("cocos2d: WARNING: unsupported pixelformat: %lx", (unsigned long)pixelFormat );
         return false;
     }
 
     const PixelFormatInfo& info = _pixelFormatInfoTables.at(pixelFormat);
 
-    if (info.compressed && !Configuration::getInstance()->supportsPVRTC()
-                        && !Configuration::getInstance()->supportsETC()
-                        && !Configuration::getInstance()->supportsS3TC()
-                        && !Configuration::getInstance()->supportsATITC())
+    if (info.compressed && 
+		!Configuration::getInstance()->supportsPVRTC() && 
+		!Configuration::getInstance()->supportsETC() && 
+		!Configuration::getInstance()->supportsS3TC() && 
+		!Configuration::getInstance()->supportsATITC())
     {
         CCLOG("cocos2d: WARNING: PVRTC/ETC images are not supported");
         return false;
     }
 
     //Set the row align only when mipmapsNum == 1 and the data is uncompressed
-    if (mipmapsNum == 1 && !info.compressed)
-    {
+    if (mipmapsNum == 1 && !info.compressed) {
         unsigned int bytesPerRow = pixelsWide * info.bpp / 8;
-
-        if(bytesPerRow % 8 == 0)
-        {
+        if(bytesPerRow % 8 == 0) {
             glPixelStorei(GL_UNPACK_ALIGNMENT, 8);
         }
-        else if(bytesPerRow % 4 == 0)
-        {
+        else if(bytesPerRow % 4 == 0) {
             glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
         }
-        else if(bytesPerRow % 2 == 0)
-        {
+        else if(bytesPerRow % 2 == 0) {
             glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
         }
-        else
-        {
+        else {
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         }
-    }else
-    {
+    }
+	else {
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     }
 
-    if(_name != 0)
-    {
+    if(_name != 0) { // 清除原有残留的纹理
         GL::deleteTexture(_name);
         _name = 0;
     }
@@ -614,17 +605,16 @@ bool Texture2D::initWithMipmaps(MipmapInfo* mipmaps, int mipmapsNum, PixelFormat
     glGenTextures(1, &_name);
     GL::bindTexture2D(_name);
 
-    if (mipmapsNum == 1)
-    {
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _antialiasEnabled ? GL_LINEAR : GL_NEAREST);
-    }else
-    {
+    if (mipmapsNum == 1) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _antialiasEnabled ? GL_LINEAR : GL_NEAREST);
+    }
+	else {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _antialiasEnabled ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST_MIPMAP_NEAREST);
     }
     
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _antialiasEnabled ? GL_LINEAR : GL_NEAREST );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _antialiasEnabled ? GL_LINEAR : GL_NEAREST );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 #if CC_ENABLE_CACHE_TEXTURE_DATA
     if (_antialiasEnabled)

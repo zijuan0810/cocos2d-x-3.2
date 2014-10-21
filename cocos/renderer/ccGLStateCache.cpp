@@ -150,8 +150,7 @@ void bindTexture2DN(GLuint textureUnit, GLuint textureId)
 {
 #if CC_ENABLE_GL_STATE_CACHE
     CCASSERT(textureUnit < MAX_ACTIVE_TEXTURE, "textureUnit is too big");
-    if (s_currentBoundTexture[textureUnit] != textureId)
-    {
+    if (s_currentBoundTexture[textureUnit] != textureId) {
         s_currentBoundTexture[textureUnit] = textureId;
         activeTexture(GL_TEXTURE0 + textureUnit);
         glBindTexture(GL_TEXTURE_2D, textureId);
@@ -166,10 +165,8 @@ void bindTexture2DN(GLuint textureUnit, GLuint textureId)
 void deleteTexture(GLuint textureId)
 {
 #if CC_ENABLE_GL_STATE_CACHE
-    for (size_t i = 0; i < MAX_ACTIVE_TEXTURE; ++i)
-    {
-        if (s_currentBoundTexture[i] == textureId)
-        {
+    for (size_t i = 0; i < MAX_ACTIVE_TEXTURE; ++i) {
+        if (s_currentBoundTexture[i] == textureId) {
             s_currentBoundTexture[i] = -1;
         }
     }

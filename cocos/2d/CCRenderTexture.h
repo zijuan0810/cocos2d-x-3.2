@@ -42,60 +42,67 @@ class EventCustom;
  */
 
 /**
-@brief RenderTexture is a generic rendering target. To render things into it,
-simply construct a render target, call begin on it, call visit on any cocos
-scenes or objects to render them, and call end. For convenience, render texture
-adds a sprite as it's display child with the results, so you can simply add
-the render texture to your scene and treat it like any other CocosNode.
-There are also functions for saving the render texture to disk in PNG or JPG format.
-
-@since v0.8.1
-*/
+ * @brief RenderTexture is a generic rendering target. To render things into it,
+ * simply construct a render target, call begin on it, call visit on any cocos
+ * scenes or objects to render them, and call end. For convenience, render texture
+ * adds a sprite as it's display child with the results, so you can simply add
+ * the render texture to your scene and treat it like any other CocosNode.
+ * There are also functions for saving the render texture to disk in PNG or JPG format.
+ @since v0.8.1
+ */
 class CC_DLL RenderTexture : public Node 
 {
 public:
-    /** initializes a RenderTexture object with width and height in Points and a pixel format( only RGB and RGBA formats are valid ) and depthStencil format*/
-    static RenderTexture * create(int w ,int h, Texture2D::PixelFormat format, GLuint depthStencilFormat);
+    /** 
+     * initializes a RenderTexture object with width and height in Points and 
+     * a pixel format( only RGB and RGBA formats are valid ) and depthStencil format
+     */
+    static RenderTexture* create(int w ,int h, Texture2D::PixelFormat format, GLuint depthStencilFormat);
 
-    /** creates a RenderTexture object with width and height in Points and a pixel format, only RGB and RGBA formats are valid */
-    static RenderTexture * create(int w, int h, Texture2D::PixelFormat format);
+    /** 
+     * creates a RenderTexture object with width and height in Points and a pixel format, 
+     * only RGB and RGBA formats are valid 
+     */
+    static RenderTexture* create(int w, int h, Texture2D::PixelFormat format);
 
-    /** creates a RenderTexture object with width and height in Points, pixel format is RGBA8888 */
+    /** 
+     * creates a RenderTexture object with width and height in Points, pixel format is RGBA8888 
+     */
     static RenderTexture * create(int w, int h);
 
     /** starts grabbing */
     virtual void begin();
 
-    /** starts rendering to the texture while clearing the texture first.
-    This is more efficient then calling -clear first and then -begin */
+    /** 
+     * starts rendering to the texture while clearing the texture first. 
+     * This is more efficient then calling -clear first and then -begin 
+     */
     virtual void beginWithClear(float r, float g, float b, float a);
-
-    /** starts rendering to the texture while clearing the texture first.
-     This is more efficient then calling -clear first and then -begin */
     virtual void beginWithClear(float r, float g, float b, float a, float depthValue);
-
-    /** starts rendering to the texture while clearing the texture first.
-     This is more efficient then calling -clear first and then -begin */
     virtual void beginWithClear(float r, float g, float b, float a, float depthValue, int stencilValue);
 
-    /** end is key word of lua, use other name to export to lua. */
-    inline void endToLua(){ end();};
+	/** 
+	 * end is key word of lua, use other name to export to lua. 
+	 */
+	inline void endToLua() { end(); };
 
-    /** ends grabbing*/
-    virtual void end();
+	/** ends grabbing*/
+	virtual void end();
 
-    /** clears the texture with a color */
-    void clear(float r, float g, float b, float a);
+	/** clears the texture with a color */
+	void clear(float r, float g, float b, float a);
 
     /** clears the texture with a specified depth value */
     virtual void clearDepth(float depthValue);
 
     /** clears the texture with a specified stencil value */
     virtual void clearStencil(int stencilValue);
-    /* creates a new Image from with the texture's data.
-       Caller is responsible for releasing it by calling delete.
+
+
+    /** 
+     * creates a new Image from with the texture's data. 
+     * Caller is responsible for releasing it by calling delete.
      */
-    
     Image* newImage(bool flipImage = true);
     
     CC_DEPRECATED_ATTRIBUTE Image* newCCImage(bool flipImage = true) { return newImage(flipImage); };
@@ -120,7 +127,10 @@ public:
      */
     void listenToForeground(EventCustom *event);
     
-    /** Valid flags: GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT. They can be OR'ed. Valid when "autoDraw" is true. */
+    /** 
+     * Valid flags: GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_STENCIL_BUFFER_BIT. 
+     * They can be OR'ed. Valid when "autoDraw" is true. 
+     */
     inline unsigned int getClearFlags() const { return _clearFlags; };
     inline void setClearFlags(unsigned int clearFlags) { _clearFlags = clearFlags; };
     
@@ -136,8 +146,9 @@ public:
     inline int getClearStencil() const { return _clearStencil; };
     inline void setClearStencil(int clearStencil) { _clearStencil = clearStencil; };
     
-    /** When enabled, it will render its children into the texture automatically. Disabled by default for compatiblity reasons.
-     Will be enabled in the future.
+    /** 
+     * When enabled, it will render its children into the texture automatically. 
+     * Disabled by default for compatiblity reasons. Will be enabled in the future.
      */
     inline bool isAutoDraw() const { return _autoDraw; };
     inline void setAutoDraw(bool isAutoDraw) { _autoDraw = isAutoDraw; };
@@ -156,30 +167,33 @@ public:
     virtual void visit(Renderer *renderer, const Mat4 &parentTransform, uint32_t parentFlags) override;
     virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) override;
 
-    //flag: use stack matrix computed from scene hierarchy or generate new modelView and projection matrix
+    /// flag: use stack matrix computed from scene hierarchy or generate new modelView and projection matrix
     void setKeepMatrix(bool keepMatrix);
-    /**Used for grab part of screen to a texture. 
-    //rtBegin: the position of renderTexture on the fullRect
-    //fullRect: the total size of screen
-    //fullViewport: the total viewportSize
-    */
+
+    /// Used for grab part of screen to a texture. 
+    /// \param rtBegin: the position of renderTexture on the fullRect
+    /// \param fullRect: the total size of screen
+    /// \param fullViewport: the total viewportSize
     void setVirtualViewport(const Vec2& rtBegin, const Rect& fullRect, const Rect& fullViewport);
 
 public:
     // XXX should be procted.
-    // but due to a bug in PowerVR + Android,
-    // the constructor is public again
+    // but due to a bug in PowerVR + Android, the constructor is public again
     RenderTexture();
     virtual ~RenderTexture();
-    /** initializes a RenderTexture object with width and height in Points and a pixel format, only RGB and RGBA formats are valid */
+
+    /// initializes a RenderTexture object with width and height in Points and a pixel format, 
+    /// only RGB and RGBA formats are valid
     bool initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat format);
-    /** initializes a RenderTexture object with width and height in Points and a pixel format( only RGB and RGBA formats are valid ) and depthStencil format*/
+
+    /// initializes a RenderTexture object with width and height in Points and 
+    /// a pixel format( only RGB and RGBA formats are valid ) and depthStencil format
     bool initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat format, GLuint depthStencilFormat);
 
 protected:
     virtual void beginWithClear(float r, float g, float b, float a, float depthValue, int stencilValue, GLbitfield flags);
     
-    //flags: whether generate new modelView and projection matrix or not
+    // flags: whether generate new modelView and projection matrix or not
     bool         _keepMatrix;
     Rect         _rtTextureRect;
     Rect         _fullRect;
@@ -188,23 +202,22 @@ protected:
     GLuint       _FBO;
     GLuint       _depthRenderBufffer;
     GLint        _oldFBO;
-    Texture2D* _texture;
-    Texture2D* _textureCopy;    // a copy of _texture
-    Image*     _UITextureImage;
+    Texture2D*	_texture;
+    Texture2D*	_textureCopy;    // a copy of _texture
+    Image*		_UITextureImage;
     Texture2D::PixelFormat _pixelFormat;
     
     // code for "auto" update
     GLbitfield   _clearFlags;
-    Color4F    _clearColor;
-    GLclampf     _clearDepth;
-    GLint        _clearStencil;
-    bool         _autoDraw;
+    Color4F		_clearColor;
+    GLclampf		_clearDepth;
+    GLint		_clearStencil;
+    bool			_autoDraw;
 
-    /** The Sprite being used.
-     The sprite, by default, will use the following blending function: GL_ONE, GL_ONE_MINUS_SRC_ALPHA.
-     The blending function can be changed in runtime by calling:
-     - renderTexture->getSprite()->setBlendFunc((BlendFunc){GL_ONE, GL_ONE_MINUS_SRC_ALPHA});
-     */
+    /// \brief The Sprite being used.
+    /// The sprite, by default, will use the following blending function: GL_ONE, GL_ONE_MINUS_SRC_ALPHA.
+    /// The blending function can be changed in runtime by calling: 
+    /// - renderTexture->getSprite()->setBlendFunc((BlendFunc){GL_ONE, GL_ONE_MINUS_SRC_ALPHA});
     Sprite* _sprite;
     
     GroupCommand _groupCommand;
@@ -214,6 +227,7 @@ protected:
     CustomCommand _beginCommand;
     CustomCommand _endCommand;
     CustomCommand _saveToFileCommand;
+
 protected:
     //renderer caches and callbacks
     void onBegin();
@@ -226,9 +240,9 @@ protected:
     
     Mat4 _oldTransMatrix, _oldProjMatrix;
     Mat4 _transformMatrix, _projectionMatrix;
+
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(RenderTexture);
-
 };
 
 // end of textures group

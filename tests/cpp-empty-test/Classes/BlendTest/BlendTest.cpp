@@ -207,10 +207,10 @@ void BlendTest::addBlendSpriteWithShader()
 	Sprite* newSprite = Sprite::createWithTexture(tmpRender->getSprite()->getTexture());
 	newSprite->setPosition(Point(winSize / 2.0f));
 
-	Sequence* seq = Sequence::create(DelayTime::create(0.0f), CallFunc::create([=]{
-	spCalendarMask->release();
-	spCalendar1->release();
-	tmpRender->release();
+	Sequence* seq = Sequence::create(DelayTime::create(0.0f), CallFunc::create([=] {
+		spCalendarMask->release();
+		spCalendar1->release();
+		tmpRender->release();
 	}), NULL);
 
 	newSprite->runAction(seq);
