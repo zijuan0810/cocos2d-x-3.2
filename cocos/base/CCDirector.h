@@ -84,8 +84,7 @@ and when to execute the Scenes.
   - GL_COLOR_ARRAY is enabled
   - GL_TEXTURE_COORD_ARRAY is enabled
 */
-enum class MATRIX_STACK_TYPE
-{
+enum class MATRIX_STACK_TYPE {
     MATRIX_STACK_MODELVIEW,
     MATRIX_STACK_PROJECTION,
     MATRIX_STACK_TEXTURE
@@ -94,9 +93,9 @@ enum class MATRIX_STACK_TYPE
 class CC_DLL Director : public Ref
 {
 private:
-    std::stack<Mat4> _modelViewMatrixStack;
-    std::stack<Mat4> _projectionMatrixStack;
-    std::stack<Mat4> _textureMatrixStack;
+    std::stack<Mat4> _modelViewMatrixStack;		///< Ä£ÐÍÊÓÍ¼¾ØÕóÕ»
+    std::stack<Mat4> _projectionMatrixStack;	///< Í¶Ó°¾ØÕóÕ»
+    std::stack<Mat4> _textureMatrixStack;		///< ÎÆÀí¾ØÕóÕ»
 protected:
     void initMatrixStack();
 public:

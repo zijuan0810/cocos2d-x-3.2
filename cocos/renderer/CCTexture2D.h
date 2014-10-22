@@ -251,32 +251,35 @@ public:
     /** Initializes a texture from a string using a text definition*/
     bool initWithString(const char *text, const FontDefinition& textDefinition);
 
-    /** sets the min filter, mag filter, wrap s and wrap t texture parameters.
-    If the texture size is NPOT (non power of 2), then in can only use GL_CLAMP_TO_EDGE in GL_TEXTURE_WRAP_{S,T}.
+    /** 
+     * sets the min filter, mag filter, wrap S and wrap T texture parameters.  
+     * If the texture size is NPOT (non power of 2), 
+     * then in can only use GL_CLAMP_TO_EDGE in GL_TEXTURE_WRAP_{S,T}.
 
-    @warning Calling this method could allocate additional texture memory.
-
-    @since v0.8
-    * @code 
-    * When this function bound into js or lua,the input parameter will be changed
-    * In js: var setBlendFunc(var arg1, var arg2, var arg3, var arg4)
-    * In lua: local setBlendFunc(local arg1, local arg2, local arg3, local arg4)
-    * @endcode
-    */
+     * @warning Calling this method could allocate additional texture memory.
+     * @since v0.8
+     * @code 
+     * When this function bound into js or lua,the input parameter will be changed
+     * In js: var setBlendFunc(var arg1, var arg2, var arg3, var arg4)
+     * In lua: local setBlendFunc(local arg1, local arg2, local arg3, local arg4)
+     * @endcode
+     */
     void setTexParameters(const TexParams& texParams);
+
     /**
      * @js NA
      * @lua NA
      */
     CC_DEPRECATED_ATTRIBUTE void setTexParameters(const TexParams* texParams) { return setTexParameters(*texParams); };
 
-    /** sets antialias texture parameters:
-    - GL_TEXTURE_MIN_FILTER = GL_LINEAR
-    - GL_TEXTURE_MAG_FILTER = GL_LINEAR
+    /** 
+     * sets antialias（抗锯齿） texture parameters:
+     - GL_TEXTURE_MIN_FILTER = GL_LINEAR
+     - GL_TEXTURE_MAG_FILTER = GL_LINEAR
 
-    @warning Calling this method could allocate additional texture memory.
+     @warning Calling this method could allocate additional texture memory.
 
-    @since v0.8
+     @since v0.8
     */
     void setAntiAliasTexParameters();
 
@@ -401,23 +404,14 @@ private:
     static void convertRGBA8888ToRGB5A1(const unsigned char* data, ssize_t dataLen, unsigned char* outData);
 
 protected:
-    /** pixel format of the texture */
-    Texture2D::PixelFormat _pixelFormat;
+    Texture2D::PixelFormat _pixelFormat;	///< pixel format of the texture 
 
-    /** width in pixels */
-    int _pixelsWide;
+    int _pixelsWide;	///< width in pixels
+    int _pixelsHigh;	///< height in pixels
 
-    /** height in pixels */
-    int _pixelsHigh;
-
-    /** texture name 纹理对象名*/
-    GLuint _name;
-
-    /** texture max S */
-    GLfloat _maxS;
-    
-    /** texture max T */
-    GLfloat _maxT;
+    GLuint	_name;	///< texture name 纹理对象名
+    GLfloat	_maxS;	///< texture max S
+    GLfloat	_maxT;	///< texture max T
 
     /** content size */
     Size _contentSize;

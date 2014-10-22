@@ -31,7 +31,7 @@ NS_CC_MATH_BEGIN
 /**
  * Defines a 4 x 4 floating point matrix representing a 3D transformation.
  *
- * Vectors are treated as columns, resulting in a matrix that is represented as follows,
+ * Vectors are treated as columns（列主序）, resulting in a matrix that is represented as follows,
  * where x, y and z are the translation components of the matrix:
  *
  * 1  0  0  x
@@ -42,7 +42,7 @@ NS_CC_MATH_BEGIN
  * This matrix class is directly compatible with OpenGL since its elements are
  * laid out in memory exactly as they are expected by OpenGL.
  * The matrix uses column-major format such that array indices increase down column first.
- * Since matrix multiplication is not commutative, multiplication must be done in the
+ * Since matrix multiplication is not commutative（可交换的）, multiplication must be done in the
  * correct order when combining transformations. Suppose we have a translation
  * matrix T and a rotation matrix R. To first rotate an object around the origin
  * and then translate it, you would multiply the two matrices as TR.
@@ -110,7 +110,7 @@ public:
      * @param m44 The fourth element of the fourth row.
      */
     Mat4(float m11, float m12, float m13, float m14, float m21, float m22, float m23, float m24,
-           float m31, float m32, float m33, float m34, float m41, float m42, float m43, float m44);
+        float m31, float m32, float m33, float m34, float m41, float m42, float m43, float m44);
 
     /**
      * Creates a matrix initialized to the specified column-major array.
@@ -146,7 +146,8 @@ public:
      * @param up The up vector.
      * @param dst A matrix to store the result in.
      */
-    static void createLookAt(const Vec3& eyePosition, const Vec3& targetPosition, const Vec3& up, Mat4* dst);
+    static void createLookAt(const Vec3& eyePosition, const Vec3& targetPosition, const Vec3& up, 
+		Mat4* dst);
 
     /**
      * Creates a view matrix based on the specified input parameters.
@@ -163,8 +164,8 @@ public:
      * @param dst A matrix to store the result in.
      */
     static void createLookAt(float eyePositionX, float eyePositionY, float eyePositionZ,
-                             float targetCenterX, float targetCenterY, float targetCenterZ,
-                             float upX, float upY, float upZ, Mat4* dst);
+                           float targetCenterX, float targetCenterY, float targetCenterZ,
+                           float upX, float upY, float upZ, Mat4* dst);
 
     /**
      * Builds a perspective projection matrix based on a field of view and returns by value.
@@ -180,7 +181,8 @@ public:
      * @param zFarPlane The distance to the far view plane.
      * @param dst A matrix to store the result in.
      */
-    static void createPerspective(float fieldOfView, float aspectRatio, float zNearPlane, float zFarPlane, Mat4* dst);
+    static void createPerspective(float fieldOfView, float aspectRatio, float zNearPlane, 
+		float zFarPlane, Mat4* dst);
 
     /**
      * Creates an orthographic projection matrix.
@@ -191,10 +193,11 @@ public:
      * @param zFarPlane The maximum z-value of the view volume.
      * @param dst A matrix to store the result in.
      */
-    static void createOrthographic(float width, float height, float zNearPlane, float zFarPlane, Mat4* dst);
+    static void createOrthographic(float width, float height, float zNearPlane, float zFarPlane, 
+		Mat4* dst);
 
     /**
-     * Creates an orthographic projection matrix.
+     * Creates an orthographic projection matrix（正交投影矩阵）.
      *
      * Projection space refers to the space after applying
      * projection transformation from view space. After the
@@ -203,7 +206,7 @@ public:
      * ranging from 0 to 1.
      *
      * Unlike perspective projection, in orthographic projection
-     * there is no perspective foreshortening.
+     * there is no perspective foreshortening（按透视法缩短的）.
      *
      * The viewable area of this orthographic projection extends
      * from left to right on the x-axis, bottom to top on the y-axis,
@@ -222,10 +225,10 @@ public:
      * @param dst A matrix to store the result in.
      */
     static void createOrthographicOffCenter(float left, float right, float bottom, float top,
-                                            float zNearPlane, float zFarPlane, Mat4* dst);
+                                        float zNearPlane, float zFarPlane, Mat4* dst);
 
     /**
-     * Creates a spherical billboard that rotates around a specified object position.
+     * Creates a spherical（球的）billboard（布告板）that rotates around a specified object position.
      *
      * This method computes the facing direction of the billboard from the object position
      * and camera position. When the object and camera positions are too close, the matrix
@@ -239,7 +242,7 @@ public:
      * @param dst A matrix to store the result in.
      */
     static void createBillboard(const Vec3& objectPosition, const Vec3& cameraPosition,
-                                const Vec3& cameraUpVector, Mat4* dst);
+                             const Vec3& cameraUpVector, Mat4* dst);
 
     /**
      * Creates a spherical billboard that rotates around a specified object position with

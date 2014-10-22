@@ -430,18 +430,15 @@ void Director::setNextDeltaTimeZero(bool nextDeltaTimeZero)
    
 void Director::initMatrixStack()
 {
-    while (!_modelViewMatrixStack.empty())
-    {
+    while (!_modelViewMatrixStack.empty()) {
         _modelViewMatrixStack.pop();
     }
     
-    while (!_projectionMatrixStack.empty())
-    {
+    while (!_projectionMatrixStack.empty()) {
         _projectionMatrixStack.pop();
     }
     
-    while (!_textureMatrixStack.empty())
-    {
+    while (!_textureMatrixStack.empty()) {
         _textureMatrixStack.pop();
     }
     
@@ -517,20 +514,16 @@ void Director::loadMatrix(MATRIX_STACK_TYPE type, const Mat4& mat)
 
 void Director::multiplyMatrix(MATRIX_STACK_TYPE type, const Mat4& mat)
 {
-    if(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW == type)
-    {
+    if(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW == type) {
         _modelViewMatrixStack.top() *= mat;
     }
-    else if(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION == type)
-    {
+    else if(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION == type) {
         _projectionMatrixStack.top() *= mat;
     }
-    else if(MATRIX_STACK_TYPE::MATRIX_STACK_TEXTURE == type)
-    {
+    else if(MATRIX_STACK_TYPE::MATRIX_STACK_TEXTURE == type) {
         _textureMatrixStack.top() *= mat;
     }
-    else
-    {
+    else {
         CCASSERT(false, "unknow matrix stack type");
     }
 }
@@ -558,22 +551,18 @@ void Director::pushMatrix(MATRIX_STACK_TYPE type)
 Mat4 Director::getMatrix(MATRIX_STACK_TYPE type)
 {
     Mat4 result;
-    if(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW == type)
-    {
+    if(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW == type) {
         result = _modelViewMatrixStack.top();
     }
-    else if(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION == type)
-    {
+    else if(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION == type) {
         result = _projectionMatrixStack.top();
     }
-    else if(MATRIX_STACK_TYPE::MATRIX_STACK_TEXTURE == type)
-    {
+    else if(MATRIX_STACK_TYPE::MATRIX_STACK_TEXTURE == type) {
         result = _textureMatrixStack.top();
     }
-    else
-    {
+    else {
         CCASSERT(false, "unknow matrix stack type, will return modelview matrix instead");
-        result =  _modelViewMatrixStack.top();
+        result = _modelViewMatrixStack.top();
     }
 //    float diffResult(0);
 //    for (int index = 0; index <16; ++index)

@@ -250,7 +250,8 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
         glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
 
         // associate texture with FBO
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture->getName(), 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 
+			_texture->getName(), 0);
 
         if (depthStencilFormat != 0) {
             // create and attach depth buffer
@@ -268,7 +269,8 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
         }
 
         // check if it worked (probably worth doing :) )
-        CCASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Could not attach texture to framebuffer");
+        CCASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, 
+			"Could not attach texture to framebuffer");
 
         _texture->setAliasTexParameters();
 
@@ -280,6 +282,7 @@ bool RenderTexture::initWithWidthAndHeight(int w, int h, Texture2D::PixelFormat 
 
         _sprite->setBlendFunc( BlendFunc::ALPHA_PREMULTIPLIED );
 
+		// 恢复原来的RBO和FBO
         glBindRenderbuffer(GL_RENDERBUFFER, oldRBO);
         glBindFramebuffer(GL_FRAMEBUFFER, _oldFBO);
         
@@ -530,7 +533,6 @@ Image* RenderTexture::newImage(bool fliimage)
 
 void RenderTexture::onBegin()
 {
-    //
     Director *director = Director::getInstance();
     
     _oldProjMatrix = director->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
@@ -539,8 +541,7 @@ void RenderTexture::onBegin()
     _oldTransMatrix = director->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
     director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _transformMatrix);
     
-    if(!_keepMatrix)
-    {
+    if(!_keepMatrix) {
         director->setProjection(director->getProjection());
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_WP8
@@ -557,7 +558,8 @@ void RenderTexture::onBegin()
         float heightRatio = size.height / texSize.height;
         
         Mat4 orthoMatrix;
-        Mat4::createOrthographicOffCenter((float)-1.0 / widthRatio, (float)1.0 / widthRatio, (float)-1.0 / heightRatio, (float)1.0 / heightRatio, -1, 1, &orthoMatrix);
+        Mat4::createOrthographicOffCenter((float)-1.0 / widthRatio, (float)1.0 / widthRatio, 
+			(float)-1.0 / heightRatio, (float)1.0 / heightRatio, -1, 1, &orthoMatrix);
         director->multiplyMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, orthoMatrix);
     }
     else
@@ -587,16 +589,24 @@ void RenderTexture::onBegin()
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_oldFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, _FBO);
 
-    //TODO move this to configration, so we don't check it every time
-    /*  Certain Qualcomm Andreno gpu's will retain data in memory after a frame buffer switch which corrupts the render to the texture. The solution is to clear the frame buffer before rendering to the texture. However, calling glClear has the unintended result of clearing the current texture. Create a temporary texture to overcome this. At the end of RenderTexture::begin(), switch the attached texture to the second one, call glClear, and then switch back to the original texture. This solution is unnecessary for other devices as they don't have the same issue with switching frame buffers.
-     */
-    if (Configuration::getInstance()->checkForGLExtension("GL_QCOM"))
-    {
+    // TODO: move this to configration, so we don't check it every time
+    // Certain Qualcomm Andreno gpu's will retain data in memory after 
+    // a frame buffer switch which corrupts（腐蚀） the render to the texture. 
+    // The solution is to clear the frame buffer before rendering to the texture. 
+    // However, calling glClear has the unintended（ 没有预期到的） result of clearing 
+    // the current texture. 
+    // Create a temporary texture to overcome this. At the end of RenderTexture::begin(), 
+    // switch the attached texture to the second one, call glClear, 
+    // and then switch back to the original texture. This solution is unnecessary for other 
+    // devices as they don't have the same issue with switching frame buffers.
+    if (Configuration::getInstance()->checkForGLExtension("GL_QCOM")) {
         // -- bind a temporary texture so we can clear the render buffer without losing our texture
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _textureCopy->getName(), 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 
+			_textureCopy->getName(), 0);
         CHECK_GL_ERROR_DEBUG();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _texture->getName(), 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 
+			_texture->getName(), 0);
     }
 }
 

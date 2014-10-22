@@ -199,7 +199,7 @@ protected:
     Rect         _fullRect;
     Rect         _fullviewPort;
     
-    GLuint       _FBO;
+    GLuint       _FBO; ///< Ö¡»º´æ¶ÔÏó
     GLuint       _depthRenderBufffer;
     GLint        _oldFBO;
     Texture2D*	_texture;
