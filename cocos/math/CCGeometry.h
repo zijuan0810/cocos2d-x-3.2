@@ -46,8 +46,8 @@ public:
     float width;
     float height;
 public:
-    operator Vec2() const
-    {
+	/// 转换构造函数
+    operator Vec2() const {
         return Vec2(width, height);
     }
 

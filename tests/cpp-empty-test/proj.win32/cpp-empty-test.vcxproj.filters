@@ -12,6 +12,9 @@
     <Filter Include="Classes\BlendTest">
       <UniqueIdentifier>{93b3fc24-9651-468b-90ad-f9572ded675b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\TextureTest">
+      <UniqueIdentifier>{9320a550-c8d5-44ab-954f-8145c99d8919}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp">
@@ -26,6 +29,9 @@
     <ClCompile Include="..\Classes\BlendTest\BlendTest.cpp">
       <Filter>Classes\BlendTest</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\TextureTest\TextureTest.cpp">
+      <Filter>Classes\TextureTest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h">
@@ -39,6 +45,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\BlendTest\BlendTest.h">
       <Filter>Classes\BlendTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\TextureTest\TextureTest.h">
+      <Filter>Classes\TextureTest</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
